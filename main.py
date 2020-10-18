@@ -14,6 +14,8 @@ player_right = pygame.transform.scale(player_right, (60,55))
 player_left = pygame.transform.scale(player_left, (60,55))
 player_up = pygame.transform.scale(player_up, (60,55))
 
+
+
 MAP = Map(10,10)
 
 WIDTH = 650
@@ -81,6 +83,7 @@ class Player(pygame.sprite.Sprite):
             bullet.direction = 'DOWN'
         all_sprites.add(bullet)
         bullets.add(bullet)
+        shoot_sound.play()
 
 class Item(pygame.sprite.Sprite):
     def __init__(self):
@@ -135,6 +138,11 @@ def draw_text(surf, text, size, x, y):
     text_rect.midtop = (x, y)
     surf.blit(text_surface, text_rect)
 
+shoot_sound = pygame.mixer.Sound('shooti1.wav')
+shoot_sound.set_volume(0.03)
+pygame.mixer.music.load('CrushingEnemies.mp3')
+pygame.mixer.music.set_volume(0.1)
+pygame.mixer.music.play(loops=-1)
 
 # Цикл игры
 running = True

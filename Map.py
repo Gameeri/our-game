@@ -1,9 +1,14 @@
 """
 Функция создания карты со случайным генератором стенок
 """
+#размер карты
+MAP_WIDTH = 40
+MAP_HEIGHT = 40
 
 
-def createMap(N, M, lBMin, lBMax, cB):
+def createMap(N, M, lBMin, lBMax, cB, cI):
+
+    #Основная часть заполнения карты стенками
     ourMap = ['e'] * N
     for i in range(N):
         ourMap[i] = ['e'] * M
@@ -35,6 +40,39 @@ def createMap(N, M, lBMin, lBMax, cB):
                 if ((y + i >= N) & (ourMap[y][x] != 'e')):
                     break
                 ourMap[y + i][x] = 'b'
+
+    #Стенки по границам
+    for i in range(N):
+        if (i == 0) or (i == N-1):
+            for j in range(M):
+                ourMap[i][j] = 'b'
+        else:
+            ourMap[i][0] = 'b'
+            ourMap[i][M-1] = 'b'
+
+    #освобождаем серединку
+    for i in range(N//2 - 1, N//2 + 2):
+        for j in range(M//2 - 1, M//2 + 2):
+            ourMap[i][j] = 'e'
+
+    for _ in range(cB//6):
+        i = random.randrange(1, N-1, 1)
+        for j in range(1, M-1):
+            ourMap[i][j] = 'e'
+
+    for _ in range(cI):
+        x = random.randrange(1, M - 2, 1)
+        y = random.randrange(1, N - 2, 1)
+        while (ourMap[y][x] != 'e'):
+            x = random.randrange(1, M - 2, 1)
+            y = random.randrange(1, N - 2, 1)
+        ourMap[y][x] = 't'
+    x = random.randrange(1, M - 2, 1)
+    y = random.randrange(0, N - 2, N - 2)
+    ourMap[y][x] = 'c'
+    x = random.randrange(0, M - 2, M - 2)
+    y = random.randrange(1, N - 2, 1)
+    ourMap[y][x] = 'c'
     return ourMap
 
 
@@ -48,9 +86,10 @@ class Map(object):
         self.N = N
         self.M = M
         lBMin = 7
-        lBMax = 20
+        lBMax = 10
         cB = 15
-        self.ourMap = createMap(N, M, lBMin, lBMax, cB)
+        cI = 15
+        self.ourMap = createMap(N, M, lBMin, lBMax, cB, cI)
 
     """
     Функция, которая проверяет, что находится в клетке
@@ -73,3 +112,6 @@ class Map(object):
             for j in range(self.M):
                 s += str(self.ourMap[i][j]) + ' '
             print(s)
+
+#наша карта
+MAP = Map(MAP_WIDTH, MAP_HEIGHT)

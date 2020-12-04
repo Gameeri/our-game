@@ -1,5 +1,4 @@
 import random
-from Wall import *
 from Weapon import *
 from Item import *
 from pygame.math import Vector2

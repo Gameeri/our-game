@@ -129,7 +129,7 @@ class Dynamite(Weapon):
         self.rect.center += self.speed
         # убить, если он заходит за верхнюю часть экрана
         pygame.sprite.groupcollide(platforms, bullets, True, False)
-        if self.rect.y < 0 or self.rect.x < 0 or checkBoolet(MAP, self.rect.center, 1):
+        if self.rect.y < 0 or self.rect.x < 0 or checkDynamite(MAP, self.rect.center, 1):
             self.kill()
 
 

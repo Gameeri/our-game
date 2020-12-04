@@ -73,12 +73,18 @@ def checkMoveRight(map, plC1, plC2):
         return True
 
 #Если пуля врезается, то она должна исчезнуть
-def checkBoolet(map, bC, mode):
+def checkDynamite(map, bC, mode):
     if (map.ourMap[bC[1] // WALL_HEIGHT][bC[0]//WALL_WIDTH] == 'b') or (map.ourMap[bC[1] // WALL_HEIGHT][bC[0]//WALL_WIDTH] == 'c'):
         yn = bC[1] // WALL_HEIGHT
         xn = bC[0]//WALL_WIDTH
         if (mode == 1) &  (xn > 0) & (yn > 0) & (yn < MAP_WIDTH - 1) & (xn < MAP_HEIGHT - 1):
             map.ourMap[bC[1] // WALL_HEIGHT][bC[0] // WALL_WIDTH] = 'e'
+        return True
+    else:
+        return False
+
+def checkBoolet(map, bC):
+    if (map.ourMap[bC[1] // WALL_HEIGHT][bC[0]//WALL_WIDTH] == 'b') or (map.ourMap[bC[1] // WALL_HEIGHT][bC[0]//WALL_WIDTH] == 'c'):
         return True
     else:
         return False

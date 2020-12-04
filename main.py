@@ -1,30 +1,23 @@
 import random
-from Wall import *
 from Weapon import *
 from Item import *
 from pygame.math import Vector2
-from os import path
 import pygame_menu
 from pygame_menu import sound
 import time
 from Map import *
+from sounds_and_images import *
 
-snd_dir = path.join(path.dirname(__file__), 'sounds')
-img_dir = path.join(path.dirname(__file__), 'image')
+#snd_dir = path.join(path.dirname(__file__), 'sounds')
+#img_dir = path.join(path.dirname(__file__), 'image')
 
 #картинки
-player_stand = pygame.image.load(path.join(img_dir,'ded3.png'))
-player_right = pygame.image.load(path.join(img_dir,'ded_right2.png'))
-player_left = pygame.image.load(path.join(img_dir,'ded_left2.png'))
-player_up = pygame.image.load(path.join(img_dir,'ded_up2.png'))
-player_stand = pygame.transform.scale(player_stand, (64,59))
-player_right = pygame.transform.scale(player_right, (60,55))
-player_left = pygame.transform.scale(player_left, (60,55))
-player_up = pygame.transform.scale(player_up, (60,55))
-tomato2 = pygame.image.load(path.join(img_dir,'tomato.png'))
-tomato2 = pygame.transform.scale(tomato2, (30,30))
-gun = pygame.image.load(path.join(img_dir,'Gun.png'))
-gun = pygame.transform.scale(gun, (30,30))
+
+
+pygame.init()
+
+
+
 
 
 #размер экрана
@@ -51,8 +44,9 @@ class Player(pygame.sprite.Sprite):
         self.left, self.right, self.up, self.down = 0, 0, 0, 1
         self.vel = 8 #величина скорости
         self.coin = 0
-        self.Weap = Dynamite
-        self.gun = False
+        self.Weap = Tomato
+        self.gun = 0 #кол-во патронов
+        self.dyn = 0 #кол-во патронов
 
     def update(self):
         self.speed = Vector2(0,0)
@@ -92,23 +86,42 @@ class Player(pygame.sprite.Sprite):
             self.rect.y += self.speed.y
 
     def shoot(self):
-        bullet = self.Weap(self.rect.center)
-        if(self.left == 1):
-            bullet.direction = 'LEFT'
-        elif (self.right == 1):
-            bullet.direction = 'RIGHT'
-        elif (self.up == 1):
-            bullet.direction = 'UP'
-        elif (self.down == 1):
-            bullet.direction = 'DOWN'
-        all_sprites.add(bullet)
-        bullets.add(bullet)
-        shoot_sound.play()
+            bullet = self.Weap(self.rect.center)
+            if(self.left == 1):
+                bullet.direction = 'LEFT'
+            elif (self.right == 1):
+                bullet.direction = 'RIGHT'
+            elif (self.up == 1):
+                bullet.direction = 'UP'
+            elif (self.down == 1):
+                bullet.direction = 'DOWN'
+            all_sprites.add(bullet)
+            bullets.add(bullet)
+            shoot_sound.play()
+
+    def check_patron(self):
+        shoot = 0
+        if (self.Weap == Gun and self.gun > 0):
+            self.shoot()
+            self.gun -= 1
+            shoot = 1
+        elif (self.Weap == Dynamite and self.dyn > 0):
+            self.shoot()
+            self.dyn -= 1
+            shoot = 1
+            shoot_sound.play()
+
+        elif self.Weap == Tomato:
+            self.shoot()
+            shoot = 1
+        if shoot == 0:
+            missfire_sound.play()
+
 
 class Dynamite(Weapon):
     def __init__(self, pos):
         super().__init__(pos)
-        self.image = bul
+        self.image = dyn
         self.rect = self.image.get_rect()
         self.vel = 2
         self.rect.center = pos
@@ -134,11 +147,9 @@ class Dynamite(Weapon):
 
 
 # Создаем игру и окно
-pygame.init()
-pygame.mixer.init()
 
-shoot_sound = pygame.mixer.Sound(path.join(snd_dir, 'shooti1.wav'))
-shoot_sound.set_volume(0.08)
+
+
 
 #добавление спрайтов
 all_sprites = pygame.sprite.Group()
@@ -202,16 +213,10 @@ def start_the_game():
     background_rect = background.get_rect()
 
     # звуки
-
     pygame.mixer.music.load(path.join(snd_dir, 'CrushingEnemies.mp3'))
     pygame.mixer.music.set_volume(0.1)
     pygame.mixer.music.play(loops=-1)
-    chest_sound = pygame.mixer.Sound(path.join(snd_dir, 'coin1.wav'))
-    chest_sound.set_volume(0.05)
-    gun_sound = pygame.mixer.Sound(path.join(snd_dir, 'gun.wav'))
-    gun_sound.set_volume(0.3)
-    tomato_sound = pygame.mixer.Sound(path.join(snd_dir, 'tomato.wav'))
-    tomato_sound.set_volume(0.3)
+
 
     score = 0
     running = True
@@ -229,24 +234,30 @@ def start_the_game():
                 if event.key == pygame.K_e:
 
                     if (pygame.sprite.spritecollide(player, items, True)):
-                        n = random.randint(0,4) #рандомное целое на отрезке. для вероятности.
-                        if n != 4:
+                        n = random.randint(0,5) #рандомное целое на отрезке. для вероятности.
+                        if n != 4 and n != 5:
                             score += 1
                             chest_sound.play()
-                        else:
+                        elif n == 4:
                             player.Weap = Gun
                             gun_sound.play()
-                            player.gun = True
+                            player.gun += 5
+                        elif n == 5:
+                            player.Weap = Dynamite
+                            watermelon_sound.play()
+                            player.dyn += 2
                 if event.key == pygame.K_SPACE:
-                    player.shoot()
+                    player.check_patron()
                 if event.key == pygame.K_r:
-                    if player.gun == True:
-                        if(player.Weap == Gun):
-                            player.Weap = Tomato
-                            tomato_sound.play()
-                        else:
-                            player.Weap = Gun
-                            gun_sound.play()
+                    if player.Weap == Gun:
+                        player.Weap = Dynamite
+                        watermelon_sound.play()
+                    elif player.Weap == Dynamite:
+                        player.Weap = Tomato
+                        tomato_sound.play()
+                    elif player.Weap == Tomato:
+                        player.Weap = Gun
+                        gun_sound.play()
 
 
 
@@ -280,8 +291,13 @@ def start_the_game():
         draw_text(screen, str(score), 18, WIDTH / 2, 10)
         if player.Weap == Tomato:
             screen.blit(tomato2, Vector2(20,20))
+
         elif player.Weap == Gun:
             screen.blit(gun, Vector2(20, 20))
+            draw_text(screen, str(player.gun), 18, 70, 25)
+        elif player.Weap == Dynamite:
+            screen.blit(dyn, Vector2(10, 10))
+            draw_text(screen, str(player.dyn), 18, 70, 25)
         # После отрисовки всего, переворачиваем экран
         pygame.display.flip()
 

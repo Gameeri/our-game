@@ -51,7 +51,7 @@ class Weapon(pygame.sprite.Sprite):
             self.speed.x = 0
         self.rect.center += self.speed
         # убить, если он заходит за верхнюю часть экрана
-        if self.rect.y < 0  or self.rect.x < 0  or checkBoolet(MAP, self.rect.center):
+        if self.rect.y < 0  or self.rect.x < 0  or checkBoolet(MAP, self.rect.center, 0):
             self.kill()
 
 class Tomato(Weapon):

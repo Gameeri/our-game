@@ -7,6 +7,7 @@ from os import path
 import pygame_menu
 from pygame_menu import sound
 import time
+from Map import *
 
 snd_dir = path.join(path.dirname(__file__), 'sounds')
 img_dir = path.join(path.dirname(__file__), 'image')
@@ -25,21 +26,6 @@ tomato2 = pygame.transform.scale(tomato2, (30,30))
 gun = pygame.image.load(path.join(img_dir,'Gun.png'))
 gun = pygame.transform.scale(gun, (30,30))
 
-#размер карты
-MAP_WIDTH = 40
-MAP_HEIGHT =40
-
-#размер стен по пикселям
-WALL_WIDTH = 65
-WALL_HEIGHT = 70
-
-#размер вещей по пикселям
-ITEM_WIDTH = 65
-ITEM_HEIGHT = 70
-
-#размер карты в пикселях
-total_level_width  = MAP_WIDTH*WALL_WIDTH # Высчитываем фактическую ширину уровня
-total_level_height = MAP_HEIGHT*WALL_HEIGHT   # высоту
 
 #размер экрана
 WIDTH = 650
@@ -126,8 +112,25 @@ class Dynamite(Weapon):
         self.rect = self.image.get_rect()
         self.vel = 2
         self.rect.center = pos
+
     def update(self):
-        super().update()
+        if self.direction == 'RIGHT':
+            self.speed.x = self.vel
+            self.speed.y = 0
+        elif self.direction == 'LEFT':
+            self.speed.x = -self.vel
+            self.speed.y = 0
+        elif self.direction == 'DOWN':
+            self.speed.y = self.vel
+            self.speed.x = 0
+        elif self.direction == 'UP':
+            self.speed.y = -self.vel
+            self.speed.x = 0
+        self.rect.center += self.speed
+        # убить, если он заходит за верхнюю часть экрана
+        pygame.sprite.groupcollide(platforms, bullets, True, False)
+        if self.rect.y < 0 or self.rect.x < 0 or checkBoolet(MAP, self.rect.center, 1):
+            self.kill()
 
 
 # Создаем игру и окно
@@ -249,8 +252,8 @@ def start_the_game():
 
         # Обновление
         all_sprites.update()
-        if(player.Weap == Dynamite):
-            pygame.sprite.groupcollide(platforms, bullets, True, True)
+        #if(player.Weap == Dynamite):
+            #pygame.sprite.groupcollide(platforms, bullets, True, True)
         #движение карты
         heading = player.rect.center - camera
         camera += heading*0.1

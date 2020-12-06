@@ -32,7 +32,90 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 
+class Monster(pygame.sprite.Sprite):
+    def __init__(self,pos):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = player_stand
+        self.rect = self.image.get_rect()
+        self.rect.center = Vector2(pos)
+        self.speed = Vector2(0,0)
+        self.left, self.right, self.up, self.down = 0, 0, 0, 1
+        self.vel = 4 #величина скорости
+        self.health = 60
 
+    def update(self):
+        self.speed = Vector2(0,0)
+        "Попадание пули в монстра"
+        if (pygame.sprite.groupcollide(monsters, bullets, False, False)):
+            if(player.Weap == Gun):
+                self.health -= 10
+                if (self.health <= 0):
+                    pygame.sprite.groupcollide(monsters, bullets, True, True)
+                else:
+                    pygame.sprite.groupcollide(monsters, bullets, False, True)
+            if (player.Weap == Tomato):
+                self.health -= 5
+                if (self.health <= 0):
+                    pygame.sprite.groupcollide(monsters, bullets, True, True)
+                else:
+                    pygame.sprite.groupcollide(monsters, bullets, False, True)
+            if (player.Weap == Dynamite):
+                pygame.sprite.groupcollide(monsters, bullets, True, True)
+
+        "Тут реализовано движение монстра"
+        if((player.rect.x - self.rect.x) ** 2 + (player.rect.y - self.rect.y) ** 2 < (500)**2):
+            if ((~checkMoveLeft(MAP, self.rect.topleft, self.rect.bottomleft) & (sign(player.rect.x - self.rect.x) == -1)) | (~checkMoveRight(MAP, self.rect.topright, self.rect.bottomright) & (sign(player.rect.x - self.rect.x) == 1))):
+                self.speed.x = 0
+                if (sign(player.rect.y - self.rect.y) == -1 & ~checkMoveUp(MAP, self.rect.topleft, self.rect.topright)):
+                    self.speed.y = 0
+                elif (sign(player.rect.y - self.rect.y) == 1 & ~checkMoveDown(MAP, self.rect.bottomleft, self.rect.bottomright)):
+                    self.speed.y = 0
+                else:
+                    self.speed.y = self.vel * sign(player.rect.y - self.rect.y)
+            elif ((~checkMoveUp(MAP, self.rect.topleft, self.rect.topright) & (sign(player.rect.y - self.rect.y) == -1)) | (~checkMoveDown(MAP, self.rect.bottomleft, self.rect.bottomright) & (sign(player.rect.y - self.rect.y) == 1))):
+                self.speed.x = self.vel * sign(player.rect.x - self.rect.x)
+                self.speed.y = 0
+            else:
+                if (player.rect.x - self.rect.x > player.rect.y - self.rect.y):
+                    self.speed.x = self.vel * sign(player.rect.x - self.rect.x)
+                    self.speed.y = self.vel * sign(player.rect.y - self.rect.y) // 2
+                else:
+                    self.speed.y = self.vel * sign(player.rect.y - self.rect.y)
+                    self.speed.x = self.vel * sign(player.rect.x - self.rect.x) // 2
+
+        else:
+            self.speed.x = 0
+            self.speed.y = 0
+
+        self.rect.x += self.speed.x
+        self.rect.y += self.speed.y
+
+class Dynamite(Weapon):
+    def __init__(self, pos):
+        super().__init__(pos)
+        self.image = dyn
+        self.rect = self.image.get_rect()
+        self.vel = 2
+        self.rect.center = pos
+
+    def update(self):
+        if self.direction == 'RIGHT':
+            self.speed.x = self.vel
+            self.speed.y = 0
+        elif self.direction == 'LEFT':
+            self.speed.x = -self.vel
+            self.speed.y = 0
+        elif self.direction == 'DOWN':
+            self.speed.y = self.vel
+            self.speed.x = 0
+        elif self.direction == 'UP':
+            self.speed.y = -self.vel
+            self.speed.x = 0
+        self.rect.center += self.speed
+        # убить, если он заходит за верхнюю часть экрана
+        pygame.sprite.groupcollide(platforms, bullets, True, False)
+        if self.rect.y < 0 or self.rect.x < 0 or checkDynamite(MAP, self.rect.center, 1):
+            self.kill()
 
 class Player(pygame.sprite.Sprite):
     def __init__(self,pos):
@@ -47,6 +130,7 @@ class Player(pygame.sprite.Sprite):
         self.Weap = Tomato
         self.gun = 0 #кол-во патронов
         self.dyn = 0 #кол-во патронов
+        self.health = 150
 
     def update(self):
         self.speed = Vector2(0,0)
@@ -84,6 +168,11 @@ class Player(pygame.sprite.Sprite):
             self.rect.top = 0
         else:
             self.rect.y += self.speed.y
+
+        "Уменьшается здоровье при столкновении с монстром"
+        if (pygame.sprite.spritecollide(player, monsters,  False)):
+            self.health -=  1
+        print(self.health) #отладка
 
     def shoot(self):
             bullet = self.Weap(self.rect.center)
@@ -155,7 +244,10 @@ class Dynamite(Weapon):
 all_sprites = pygame.sprite.Group()
 items = pygame.sprite.Group()
 bullets = pygame.sprite.Group()
+monsters = pygame.sprite.Group()#для отладки!!!
 player = Player((total_level_width//2, total_level_height//2))
+monster = Monster((total_level_width//2, total_level_height//2)) #для отладки!!!!
+monsters.add(monster)#для отладки!!!
 
 
 platforms = pygame.sprite.Group()
@@ -185,6 +277,7 @@ for row in MAP.ourMap: # вся строка
     coord.x = 0                   #на каждой новой строчке начинаем с нуля
     i += 1
 all_sprites.add(player)
+all_sprites.add(monster)
 
 #отображение текста
 font_name = pygame.font.match_font('arial')

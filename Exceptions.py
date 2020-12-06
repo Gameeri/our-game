@@ -79,6 +79,8 @@ def checkDynamite(map, bC, mode):
         xn = bC[0]//WALL_WIDTH
         if (mode == 1) &  (xn > 0) & (yn > 0) & (yn < MAP_WIDTH - 1) & (xn < MAP_HEIGHT - 1):
             map.ourMap[bC[1] // WALL_HEIGHT][bC[0] // WALL_WIDTH] = 'e'
+        if (mode == 1) & (xn > 0) & (yn > 0) & (yn < MAP_WIDTH - 1) & (xn < MAP_HEIGHT - 1):
+            map.ourMap[bC[1] // WALL_HEIGHT][bC[0] // WALL_WIDTH] = 'e'
         return True
     else:
         return False
@@ -88,3 +90,11 @@ def checkBoolet(map, bC):
         return True
     else:
         return False
+
+def sign(x):
+    if (x<0):
+        return -1
+    elif(x>0):
+        return 1
+    else:
+        return 0

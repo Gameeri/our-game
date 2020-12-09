@@ -92,7 +92,7 @@ def checkBoolet(map, bC):
         return False
 
 def sign(x):
-    if (x<0):
+    if (x < 0):
         return -1
     elif(x>0):
         return 1

@@ -33,11 +33,16 @@ GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 
 class Monster(pygame.sprite.Sprite):
-    def __init__(self,pos):
+    def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.image = player_stand
         self.rect = self.image.get_rect()
+        "Начальные координаты монстра"
+        pos = (0, 0)
+        while (MAP.ourMap[pos[1]//WALL_HEIGHT][pos[0]//WALL_WIDTH] != 'e'):
+            pos = (random.randint(WALL_WIDTH, total_level_width), random.randint(WALL_HEIGHT, total_level_height))
         self.rect.center = Vector2(pos)
+
         self.speed = Vector2(0,0)
         self.left, self.right, self.up, self.down = 0, 0, 0, 1
         self.vel = 4 #величина скорости
@@ -46,7 +51,7 @@ class Monster(pygame.sprite.Sprite):
     def update(self):
         self.speed = Vector2(0,0)
         "Попадание пули в монстра"
-        if (pygame.sprite.groupcollide(monsters, bullets, False, False)):
+        if (pygame.sprite.spritecollide(self, bullets, False)):
             if(player.Weap == Gun):
                 self.health -= 10
                 if (self.health <= 0):
@@ -71,7 +76,7 @@ class Monster(pygame.sprite.Sprite):
                 elif (sign(player.rect.y - self.rect.y) == 1 & ~checkMoveDown(MAP, self.rect.bottomleft, self.rect.bottomright)):
                     self.speed.y = 0
                 else:
-                    self.speed.y = self.vel * sign(player.rect.y - self.rect.y)
+                    self.speed.y = self.vel * sign(player.rect.y - self.rect.y + 5)
             elif ((~checkMoveUp(MAP, self.rect.topleft, self.rect.topright) & (sign(player.rect.y - self.rect.y) == -1)) | (~checkMoveDown(MAP, self.rect.bottomleft, self.rect.bottomright) & (sign(player.rect.y - self.rect.y) == 1))):
                 self.speed.x = self.vel * sign(player.rect.x - self.rect.x)
                 self.speed.y = 0
@@ -246,8 +251,10 @@ items = pygame.sprite.Group()
 bullets = pygame.sprite.Group()
 monsters = pygame.sprite.Group()#для отладки!!!
 player = Player((total_level_width//2, total_level_height//2))
-monster = Monster((total_level_width//2, total_level_height//2)) #для отладки!!!!
-monsters.add(monster)#для отладки!!!
+for _ in range(10): #для отладки!!!
+    monster = Monster() #для отладки!!!!
+    monsters.add(monster)#для отладки!!!
+    all_sprites.add(monster)
 
 
 platforms = pygame.sprite.Group()
@@ -277,7 +284,6 @@ for row in MAP.ourMap: # вся строка
     coord.x = 0                   #на каждой новой строчке начинаем с нуля
     i += 1
 all_sprites.add(player)
-all_sprites.add(monster)
 
 #отображение текста
 font_name = pygame.font.match_font('arial')

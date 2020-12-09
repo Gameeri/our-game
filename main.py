@@ -8,17 +8,7 @@ import time
 from Map import *
 from sounds_and_images import *
 
-#snd_dir = path.join(path.dirname(__file__), 'sounds')
-#img_dir = path.join(path.dirname(__file__), 'image')
-
-#картинки
-
-
 pygame.init()
-
-
-
-
 
 #размер экрана
 WIDTH = 650
@@ -65,7 +55,8 @@ class Monster(pygame.sprite.Sprite):
                 else:
                     pygame.sprite.groupcollide(monsters, bullets, False, True)
             if (player.Weap == Dynamite):
-                pygame.sprite.groupcollide(monsters, bullets, True, True)
+                pygame.sprite.groupcollide(monsters, dynamites, True, True)
+        pygame.sprite.groupcollide(monsters, dynamites, True, True)
 
         "Тут реализовано движение монстра"
         if((player.rect.x - self.rect.x) ** 2 + (player.rect.y - self.rect.y) ** 2 < (500)**2):
@@ -95,13 +86,15 @@ class Monster(pygame.sprite.Sprite):
         self.rect.x += self.speed.x
         self.rect.y += self.speed.y
 
-class Dynamite(Weapon):
+class Dynamite(pygame.sprite.Sprite):
     def __init__(self, pos):
-        super().__init__(pos)
+        pygame.sprite.Sprite.__init__(self)
         self.image = dyn
         self.rect = self.image.get_rect()
         self.vel = 2
         self.rect.center = pos
+        self.speed = Vector2(0, 0)
+        self.direction = 'DOWN'
 
     def update(self):
         if self.direction == 'RIGHT':
@@ -118,7 +111,7 @@ class Dynamite(Weapon):
             self.speed.x = 0
         self.rect.center += self.speed
         # убить, если он заходит за верхнюю часть экрана
-        pygame.sprite.groupcollide(platforms, bullets, True, False)
+        pygame.sprite.groupcollide(platforms, dynamites, True, False)
         if self.rect.y < 0 or self.rect.x < 0 or checkDynamite(MAP, self.rect.center, 1):
             self.kill()
 
@@ -135,7 +128,7 @@ class Player(pygame.sprite.Sprite):
         self.Weap = Tomato
         self.gun = 0 #кол-во патронов
         self.dyn = 0 #кол-во патронов
-        self.health = 150
+        self.health = 15000
 
     def update(self):
         self.speed = Vector2(0,0)
@@ -188,9 +181,14 @@ class Player(pygame.sprite.Sprite):
                 bullet.direction = 'UP'
             elif (self.down == 1):
                 bullet.direction = 'DOWN'
-            all_sprites.add(bullet)
-            bullets.add(bullet)
-            shoot_sound.play()
+            if self.Weap == Dynamite:
+                all_sprites.add(bullet)
+                dynamites.add(bullet)
+                shoot_sound.play()
+            else:
+                all_sprites.add(bullet)
+                bullets.add(bullet)
+                shoot_sound.play()
 
     def check_patron(self):
         shoot = 0
@@ -210,44 +208,11 @@ class Player(pygame.sprite.Sprite):
         if shoot == 0:
             missfire_sound.play()
 
-
-class Dynamite(Weapon):
-    def __init__(self, pos):
-        super().__init__(pos)
-        self.image = dyn
-        self.rect = self.image.get_rect()
-        self.vel = 2
-        self.rect.center = pos
-
-    def update(self):
-        if self.direction == 'RIGHT':
-            self.speed.x = self.vel
-            self.speed.y = 0
-        elif self.direction == 'LEFT':
-            self.speed.x = -self.vel
-            self.speed.y = 0
-        elif self.direction == 'DOWN':
-            self.speed.y = self.vel
-            self.speed.x = 0
-        elif self.direction == 'UP':
-            self.speed.y = -self.vel
-            self.speed.x = 0
-        self.rect.center += self.speed
-        # убить, если он заходит за верхнюю часть экрана
-        pygame.sprite.groupcollide(platforms, bullets, True, False)
-        if self.rect.y < 0 or self.rect.x < 0 or checkDynamite(MAP, self.rect.center, 1):
-            self.kill()
-
-
-# Создаем игру и окно
-
-
-
-
 #добавление спрайтов
 all_sprites = pygame.sprite.Group()
 items = pygame.sprite.Group()
 bullets = pygame.sprite.Group()
+dynamites = pygame.sprite.Group()
 monsters = pygame.sprite.Group()#для отладки!!!
 player = Player((total_level_width//2, total_level_height//2))
 for _ in range(10): #для отладки!!!
@@ -329,6 +294,7 @@ def start_the_game():
             # check for closing window
             if event.type == pygame.QUIT:
                 exit()
+
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_e:
 
@@ -345,6 +311,8 @@ def start_the_game():
                             player.Weap = Dynamite
                             watermelon_sound.play()
                             player.dyn += 2
+                if event.key == pygame.K_ESCAPE:
+                    continue_menu()
                 if event.key == pygame.K_SPACE:
                     player.check_patron()
                 if event.key == pygame.K_r:
@@ -436,6 +404,36 @@ def game_over():
         #surface.blit(neg, (0,0))
         pygame.display.flip()
 
+
+def continue_menu():
+    surface = pygame.display.set_mode((650, 500))
+    bkgr = pygame.image.load(path.join('main.jpg')).convert()
+    menu = pygame_menu.Menu(250, 400, 'Pause',
+                            theme=pygame_menu.themes.THEME_GREEN)
+    surface.blit(bkgr, bkgr.get_rect())
+    menu.add_button('Continue', start_the_game)
+    menu.add_button('Quit', pygame_menu.events.EXIT)
+
+    engine = sound.Sound()
+    engine.set_sound(sound.SOUND_TYPE_KEY_ADDITION, 'type.wav')
+    engine.set_sound(sound.SOUND_TYPE_CLICK_MOUSE, 'type.wav')
+    menu.set_sound(engine, recursive=True)
+    pygame.mixer.music.load(path.join(snd_dir, 'HeroicDemise.mp3'))
+    pygame.mixer.music.set_volume(0.22)
+    pygame.mixer.music.play(loops=-1)
+
+    while True:
+        events = pygame.event.get()
+
+        for event in events:
+            if event.type == pygame.QUIT:
+                exit()
+
+        if menu.is_enabled():
+            menu.update(events)
+            menu.draw(surface)
+
+        pygame.display.update()
 
 surface = pygame.display.set_mode((650, 500))
 bkgr = pygame.image.load(path.join('main.jpg')).convert()

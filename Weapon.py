@@ -1,10 +1,8 @@
 import pygame
-import pyganim
 
 from Exceptions import *
 from Map import MAP
 from pygame.math import Vector2
-from os import path
 from Wall import *
 
 img_dir = path.join(path.dirname(__file__), 'image')
@@ -12,13 +10,6 @@ img_dir = path.join(path.dirname(__file__), 'image')
 RED = (255, 0, 0)
 WIDTH = 650*2
 HEIGHT = 500*2
-
-ANIMATION_DELAY = 0.1 # скорость смены кадров
-ANIMATION_TOMATO = [pygame.image.load(path.join(img_dir,'tomato.png')),
-            pygame.image.load(path.join(img_dir,'tomato2.png')),
-            pygame.image.load(path.join(img_dir,'tomato3.png')),
-            pygame.image.load(path.join(img_dir,'tomato4.png'))]
-
 
 tomato = pygame.image.load(path.join(img_dir,'tomato.png'))
 tomato = pygame.transform.scale(tomato, (20,20))

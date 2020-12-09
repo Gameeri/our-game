@@ -1,17 +1,11 @@
+from Map import *
+
 #погрешности
 deltax0 = 4
 deltay0 = 4
 k = 4
 deltax = deltax0
 deltay = deltay0
-
-#размер карты
-MAP_WIDTH = 40
-MAP_HEIGHT = 40
-
-#размер стен по пикселям
-WALL_WIDTH = 65
-WALL_HEIGHT = 70
 
 """
 Проверка, будет ли идти вверх
@@ -79,8 +73,28 @@ def checkMoveRight(map, plC1, plC2):
         return True
 
 #Если пуля врезается, то она должна исчезнуть
+def checkDynamite(map, bC, mode):
+    if (map.ourMap[bC[1] // WALL_HEIGHT][bC[0]//WALL_WIDTH] == 'b') or (map.ourMap[bC[1] // WALL_HEIGHT][bC[0]//WALL_WIDTH] == 'c'):
+        yn = bC[1] // WALL_HEIGHT
+        xn = bC[0]//WALL_WIDTH
+        if (mode == 1) &  (xn > 0) & (yn > 0) & (yn < MAP_WIDTH - 1) & (xn < MAP_HEIGHT - 1):
+            map.ourMap[bC[1] // WALL_HEIGHT][bC[0] // WALL_WIDTH] = 'e'
+        if (mode == 1) & (xn > 0) & (yn > 0) & (yn < MAP_WIDTH - 1) & (xn < MAP_HEIGHT - 1):
+            map.ourMap[bC[1] // WALL_HEIGHT][bC[0] // WALL_WIDTH] = 'e'
+        return True
+    else:
+        return False
+
 def checkBoolet(map, bC):
     if (map.ourMap[bC[1] // WALL_HEIGHT][bC[0]//WALL_WIDTH] == 'b') or (map.ourMap[bC[1] // WALL_HEIGHT][bC[0]//WALL_WIDTH] == 'c'):
         return True
     else:
         return False
+
+def sign(x):
+    if (x < 0):
+        return -1
+    elif(x>0):
+        return 1
+    else:
+        return 0

@@ -177,7 +177,6 @@ class Player(pygame.sprite.Sprite):
         "Уменьшается здоровье при столкновении с монстром"
         if (pygame.sprite.spritecollide(player, monsters,  False)):
             self.health -=  1
-        print(self.health) #отладка
 
     def shoot(self):
             bullet = self.Weap(self.rect.center)

@@ -35,4 +35,5 @@ tomato2 = pygame.transform.scale(tomato2, (30,30))
 gun = pygame.image.load(path.join(img_dir,'Gun.png'))
 gun = pygame.transform.scale(gun, (30,30))
 dyn = pygame.image.load(path.join(img_dir,'watermelon40.png'))
+ghost = pygame.image.load(path.join(img_dir,'g.png'))
 

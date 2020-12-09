@@ -35,7 +35,7 @@ BLUE = (0, 0, 255)
 class Monster(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = player_stand
+        self.image = ghost
         self.rect = self.image.get_rect()
         "Начальные координаты монстра"
         pos = (0, 0)
@@ -286,10 +286,10 @@ for row in MAP.ourMap: # вся строка
 all_sprites.add(player)
 
 #отображение текста
-font_name = pygame.font.match_font('arial')
-def draw_text(surf, text, size, x, y):
-    font = pygame.font.Font(font_name, size)
-    text_surface = font.render(text, True, BLACK)
+def draw_text(surf, text, x, y, colour, font):
+
+    #font = pygame.font.Font(font, size)
+    text_surface = font.render(text, True, colour)
     text_rect = text_surface.get_rect()
     text_rect.midtop = (x, y)
     surf.blit(text_surface, text_rect)
@@ -315,6 +315,7 @@ def start_the_game():
     pygame.mixer.music.load(path.join(snd_dir, 'CrushingEnemies.mp3'))
     pygame.mixer.music.set_volume(0.1)
     pygame.mixer.music.play(loops=-1)
+
 
 
     score = 0
@@ -359,11 +360,14 @@ def start_the_game():
                         gun_sound.play()
 
 
-
+        if player.health <= 0:
+            pygame.mixer.music.load(path.join(snd_dir, 'game_over.mp3'))
+            pygame.mixer.music.set_volume(0.1)
+            pygame.mixer.music.play(loops=-1)
+            game_over()
         # Обновление
         all_sprites.update()
-        #if(player.Weap == Dynamite):
-            #pygame.sprite.groupcollide(platforms, bullets, True, True)
+
         #движение карты
         heading = player.rect.center - camera
         camera += heading*0.1
@@ -387,18 +391,47 @@ def start_the_game():
         for s in all_sprites:
             screen.blit(s.image, s.rect.topleft - offset)
 
-        draw_text(screen, str(score), 18, WIDTH / 2, 10)
+        draw_text(screen, str(score), WIDTH / 2, 10, BLACK, pygame.font.Font("DS Stamper.ttf", 20))
         if player.Weap == Tomato:
-            screen.blit(tomato2, Vector2(20,20))
+            screen.blit(tomato2, Vector2(20, 20))
 
         elif player.Weap == Gun:
             screen.blit(gun, Vector2(20, 20))
-            draw_text(screen, str(player.gun), 18, 70, 25)
+            draw_text(screen, str(player.gun), 70, 25, BLACK, pygame.font.Font("DS Stamper.ttf", 20))
         elif player.Weap == Dynamite:
             screen.blit(dyn, Vector2(10, 10))
-            draw_text(screen, str(player.dyn), 18, 70, 25)
+            draw_text(screen, str(player.dyn), 70, 25, BLACK, pygame.font.Font("DS Stamper.ttf", 20))
+
         # После отрисовки всего, переворачиваем экран
         pygame.display.flip()
+
+def game_over():
+    surface = pygame.display.set_mode((650, 500))
+    pygame.display.set_caption("My Game")
+    bkgr = pygame.image.load(path.join('main.jpg')).convert()
+    neg = pygame.Surface(bkgr.get_size())
+    neg.fill((255, 255, 255))
+    neg.blit(bkgr, (0, 0), special_flags=pygame.BLEND_SUB)
+    surface.blit(neg, neg.get_rect())
+
+
+
+    while True:
+        draw_text(surface, "Press any key to exit", WIDTH / 2, 400, WHITE, pygame.font.Font("AirmoleAntique Regular.ttf", 40))
+        draw_text(surface, "GAME OVER", WIDTH / 2, 150, RED, pygame.font.Font("AirmoleAntique Regular.ttf", 100))
+        events = pygame.event.get()
+
+
+
+        for event in events:
+            if event.type == pygame.QUIT:
+                exit()
+            if event.type == pygame.KEYDOWN:
+                exit()
+        neg.blit(bkgr, (0, 0), special_flags=pygame.BLEND_SUB)
+        #surface.blit(neg, (0,0))
+        pygame.display.flip()
+
 
 surface = pygame.display.set_mode((650, 500))
 bkgr = pygame.image.load(path.join('main.jpg')).convert()

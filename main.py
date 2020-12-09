@@ -390,7 +390,6 @@ def start_the_game():
         for s in all_sprites:
             screen.blit(s.image, s.rect.topleft - offset)
 
-        draw_text(screen, str(score), WIDTH / 2, 10, BLACK, pygame.font.Font("DS Stamper.ttf", 20))
         if player.Weap == Tomato:
             screen.blit(tomato2, Vector2(20, 20))
 
@@ -400,6 +399,12 @@ def start_the_game():
         elif player.Weap == Dynamite:
             screen.blit(dyn, Vector2(10, 10))
             draw_text(screen, str(player.dyn), 70, 25, BLACK, pygame.font.Font("DS Stamper.ttf", 20))
+
+        screen.blit(heart, Vector2(590, 20))
+        draw_text(screen, str(player.health), 575, 25, BLACK, pygame.font.Font("DS Stamper.ttf", 20))
+
+        screen.blit(money, Vector2(590, 55))
+        draw_text(screen, str(score), 575, 60, BLACK, pygame.font.Font("DS Stamper.ttf", 20))
 
         # После отрисовки всего, переворачиваем экран
         pygame.display.flip()

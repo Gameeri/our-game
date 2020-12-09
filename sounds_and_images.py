@@ -36,4 +36,7 @@ gun = pygame.image.load(path.join(img_dir,'Gun.png'))
 gun = pygame.transform.scale(gun, (30,30))
 dyn = pygame.image.load(path.join(img_dir,'watermelon40.png'))
 ghost = pygame.image.load(path.join(img_dir,'g.png'))
-
+heart = pygame.image.load(path.join(img_dir,'heart.png'))
+heart = pygame.transform.scale(heart, (30,30))
+money = pygame.image.load(path.join(img_dir,'Coin.png'))
+money = pygame.transform.scale(money, (30,30))

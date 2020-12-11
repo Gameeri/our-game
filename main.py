@@ -251,8 +251,6 @@ all_sprites.add(player)
 
 #отображение текста
 def draw_text(surf, text, x, y, colour, font):
-
-    #font = pygame.font.Font(font, size)
     text_surface = font.render(text, True, colour)
     text_rect = text_surface.get_rect()
     text_rect.midtop = (x, y)
@@ -268,46 +266,57 @@ def set_difficulty(value, difficulty):
 running = True
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 t = 0
-while(running):
+background = pygame.image.load(path.join(img_dir, '80.jpg')).convert()
+background_rect = background.get_rect()
+pygame.display.set_caption("My Game")
+pygame.mixer.music.load(path.join(snd_dir, 'Mysterious.mp3'))
+pygame.mixer.music.set_volume(0.1)
+pygame.mixer.music.play(loops=-1)
+while(running):  
     string1 = ""
     string2 = ""
-    string = ""
-    screen.fill(BLACK)
+    string3 = ""
+    
+
+    screen.blit(background, background_rect)
+
     if t == 0:
-        string =  "Long time ago lived one elder"
+        string1 =  "Long time ago"
+        string2 = "lived one elder"
     if t == 1:
-        string1 = "He took care of his garden"
-        string2 = "for centuries and cherished it"
-        string = ""
+        string1 = "He took care of "
+        string2 = "his garden for centuries"
+        string3 = " and cherished it"
 
     if t == 2:
-        string1 = "One day evil spirits came"
-        string2 = "from the neighboring lands"
-        string = ""
+        string1 = "One day evil spirits"
+        string2 = "came from the"
+        string3 = "neighboring lands"
 
     if t == 3:
         string1 = "They craved only"
         string2 = "destruction and blood"
-        string = ""
+        string3 = ""
 
     if t == 4:
-        string = "The hope was dwindling..."
+        string2 = "The hope was dwindling..."
         string1 = ""
-        string2 = ""
+        string3 = ""
 
 
-    draw_text(screen, string,  WIDTH / 2, 200, WHITE, pygame.font.Font("Amano.ttf", 40))
-    draw_text(screen, string1,  WIDTH / 2, 170, WHITE, pygame.font.Font("Amano.ttf", 40))
-    draw_text(screen, string2,  WIDTH / 2, 230, WHITE, pygame.font.Font("Amano.ttf", 40))
+    draw_text(screen, string1,  WIDTH / 2, 170, BLACK, pygame.font.Font("Amano.ttf", 35))
+    draw_text(screen, string2,  WIDTH / 2, 230, BLACK, pygame.font.Font("Amano.ttf", 35))
+    draw_text(screen, string3,  WIDTH / 2, 290, BLACK, pygame.font.Font("Amano.ttf", 35))
     for event in pygame.event.get():
         if event.type == pygame.QUIT: 
             exit()
         if event.type == pygame.KEYDOWN:
             t+= 1
+            paper.play()
 
     if t == 5:
         break
-    pygame.display.flip()
+    pygame.display.flip()                                                \
 
 
 
@@ -451,6 +460,7 @@ def game_over():
 
 
 def continue_menu():
+    pygame.display.set_caption("My Game")
     surface = pygame.display.set_mode((650, 500))
     bkgr = pygame.image.load(path.join('main.jpg')).convert()
     menu = pygame_menu.Menu(250, 400, 'Pause',
@@ -482,8 +492,9 @@ def continue_menu():
 
 surface = pygame.display.set_mode((650, 500))
 bkgr = pygame.image.load(path.join('main.jpg')).convert()
-menu = pygame_menu.Menu(300, 400, 'Hello, friend',
-                       theme=pygame_menu.themes.THEME_GREEN)
+menu = pygame_menu.Menu(300, 400, 'Main menu',
+                       theme=pygame_menu.themes.THEME_SOLARIZED)
+pygame.display.set_caption("My Game")
 surface.blit(bkgr, bkgr.get_rect())
 menu.add_button('Play', start_the_game)
 menu.add_selector('Difficulty :', [('Hard', 1), ('Easy', 2)], onchange=set_difficulty)

@@ -21,6 +21,8 @@ tomato_sound = pygame.mixer.Sound(path.join(snd_dir, 'tomato.wav'))
 tomato_sound.set_volume(0.3)
 watermelon_sound = pygame.mixer.Sound(path.join(snd_dir, 'watermelon.wav'))
 watermelon_sound.set_volume(0.3)
+paper = pygame.mixer.Sound(path.join(snd_dir, 'intr.wav'))
+paper.set_volume(0.3)
 
 player_stand = pygame.image.load(path.join(img_dir,'ded3.png'))
 player_right = pygame.image.load(path.join(img_dir,'ded_right2.png'))

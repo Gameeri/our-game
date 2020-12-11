@@ -43,13 +43,13 @@ class Monster(pygame.sprite.Sprite):
         "Попадание пули в монстра"
         if (pygame.sprite.spritecollide(self, bullets, False)):
             if(player.Weap == Gun):
-                self.health -= 10
+                self.health -= 20
                 if (self.health <= 0):
                     pygame.sprite.groupcollide(monsters, bullets, True, True)
                 else:
                     pygame.sprite.groupcollide(monsters, bullets, False, True)
             if (player.Weap == Tomato):
-                self.health -= 5
+                self.health -= 3
                 if (self.health <= 0):
                     pygame.sprite.groupcollide(monsters, bullets, True, True)
                 else:
@@ -128,7 +128,7 @@ class Player(pygame.sprite.Sprite):
         self.Weap = Tomato
         self.gun = 0 #кол-во патронов
         self.dyn = 0 #кол-во патронов
-        self.health = 15000
+        self.health = 150
 
     def update(self):
         self.speed = Vector2(0,0)
@@ -264,6 +264,51 @@ def draw_text(surf, text, x, y, colour, font):
 def set_difficulty(value, difficulty):
     # Do the job here !
     pass
+
+running = True
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+t = 0
+while(running):
+    string1 = ""
+    string2 = ""
+    string = ""
+    screen.fill(BLACK)
+    if t == 0:
+        string =  "Long time ago lived one elder"
+    if t == 1:
+        string1 = "He took care of his garden"
+        string2 = "for centuries and cherished it"
+        string = ""
+
+    if t == 2:
+        string1 = "One day evil spirits came"
+        string2 = "from the neighboring lands"
+        string = ""
+
+    if t == 3:
+        string1 = "They craved only"
+        string2 = "destruction and blood"
+        string = ""
+
+    if t == 4:
+        string = "The hope was dwindling..."
+        string1 = ""
+        string2 = ""
+
+
+    draw_text(screen, string,  WIDTH / 2, 200, WHITE, pygame.font.Font("Amano.ttf", 40))
+    draw_text(screen, string1,  WIDTH / 2, 170, WHITE, pygame.font.Font("Amano.ttf", 40))
+    draw_text(screen, string2,  WIDTH / 2, 230, WHITE, pygame.font.Font("Amano.ttf", 40))
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT: 
+            exit()
+        if event.type == pygame.KEYDOWN:
+            t+= 1
+
+    if t == 5:
+        break
+    pygame.display.flip()
+
 
 
 def start_the_game():
@@ -440,8 +485,8 @@ bkgr = pygame.image.load(path.join('main.jpg')).convert()
 menu = pygame_menu.Menu(300, 400, 'Hello, friend',
                        theme=pygame_menu.themes.THEME_GREEN)
 surface.blit(bkgr, bkgr.get_rect())
-menu.add_selector('Difficulty :', [('Hard', 1), ('Easy', 2)], onchange=set_difficulty)
 menu.add_button('Play', start_the_game)
+menu.add_selector('Difficulty :', [('Hard', 1), ('Easy', 2)], onchange=set_difficulty)
 menu.add_button('Quit', pygame_menu.events.EXIT)
 
 engine = sound.Sound()

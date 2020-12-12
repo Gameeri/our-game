@@ -89,7 +89,7 @@ class Monster(pygame.sprite.Sprite):
 class Dynamite(pygame.sprite.Sprite):
     def __init__(self, pos):
         pygame.sprite.Sprite.__init__(self)
-        self.image = dyn
+        self.image = Dyn
         self.rect = self.image.get_rect()
         self.vel = 2
         self.rect.center = pos
@@ -124,11 +124,11 @@ class Player(pygame.sprite.Sprite):
         self.speed = Vector2(0,0)
         self.left, self.right, self.up, self.down = 0, 0, 0, 1
         self.vel = 8 #величина скорости
-        self.coin = 0
         self.Weap = Tomato
         self.gun = 0 #кол-во патронов
         self.dyn = 0 #кол-во патронов
         self.health = 150
+        self.food = 0
 
     def update(self):
         self.speed = Vector2(0,0)
@@ -170,6 +170,11 @@ class Player(pygame.sprite.Sprite):
         "Уменьшается здоровье при столкновении с монстром"
         if (pygame.sprite.spritecollide(player, monsters,  False)):
             self.health -=  1
+
+    def eat(self):
+        if self.food > 0:
+            self.food -= 1
+            self.health += 5
 
     def shoot(self):
             bullet = self.Weap(self.rect.center)
@@ -336,7 +341,7 @@ def start_the_game():
 
 
 
-    score = 0
+
     running = True
     camera = Vector2(total_level_width // 2, total_level_height // 2)
     while running:
@@ -355,7 +360,7 @@ def start_the_game():
                     if (pygame.sprite.spritecollide(player, items, True)):
                         n = random.randint(0,5) #рандомное целое на отрезке. для вероятности.
                         if n != 4 and n != 5:
-                            score += 1
+                            player.food += 1
                             chest_sound.play()
                         elif n == 4:
                             player.Weap = Gun
@@ -369,6 +374,8 @@ def start_the_game():
                     continue_menu()
                 if event.key == pygame.K_SPACE:
                     player.check_patron()
+                if event.key == pygame.K_q:
+                    player.eat()
                 if event.key == pygame.K_r:
                     if player.Weap == Gun:
                         player.Weap = Dynamite
@@ -416,17 +423,17 @@ def start_the_game():
             screen.blit(tomato2, Vector2(20, 20))
 
         elif player.Weap == Gun:
-            screen.blit(gun, Vector2(20, 20))
+            screen.blit(Gun2, Vector2(20, 20))
             draw_text(screen, str(player.gun), 70, 25, BLACK, pygame.font.Font("DS Stamper.ttf", 20))
         elif player.Weap == Dynamite:
-            screen.blit(dyn, Vector2(10, 10))
+            screen.blit(Dyn, Vector2(10, 10))
             draw_text(screen, str(player.dyn), 70, 25, BLACK, pygame.font.Font("DS Stamper.ttf", 20))
 
         screen.blit(heart, Vector2(590, 20))
         draw_text(screen, str(player.health), 575, 25, BLACK, pygame.font.Font("DS Stamper.ttf", 20))
 
         screen.blit(money, Vector2(590, 55))
-        draw_text(screen, str(score), 575, 60, BLACK, pygame.font.Font("DS Stamper.ttf", 20))
+        draw_text(screen, str(player.food), 575, 60, BLACK, pygame.font.Font("DS Stamper.ttf", 20))
 
         # После отрисовки всего, переворачиваем экран
         pygame.display.flip()
@@ -464,7 +471,7 @@ def continue_menu():
     surface = pygame.display.set_mode((650, 500))
     bkgr = pygame.image.load(path.join('main.jpg')).convert()
     menu = pygame_menu.Menu(250, 400, 'Pause',
-                            theme=pygame_menu.themes.THEME_GREEN)
+                            theme=pygame_menu.themes.THEME_SOLARIZED )
     surface.blit(bkgr, bkgr.get_rect())
     menu.add_button('Continue', start_the_game)
     menu.add_button('Quit', pygame_menu.events.EXIT)

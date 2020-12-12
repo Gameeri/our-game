@@ -39,7 +39,7 @@ class Monster(pygame.sprite.Sprite):
         self.health = 60
 
     def update(self):
-        self.speed = Vector2(0,0)
+        self.speed = Vector2(0, 0)
         "Попадание пули в монстра"
         if (pygame.sprite.spritecollide(self, bullets, False)):
             if(player.Weap == Gun):
@@ -321,7 +321,7 @@ while(running):
 
     if t == 5:
         break
-    pygame.display.flip()                                                \
+    pygame.display.flip()
 
 
 

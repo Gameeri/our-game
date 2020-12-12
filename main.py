@@ -175,6 +175,7 @@ class Player(pygame.sprite.Sprite):
         if self.food > 0:
             self.food -= 1
             self.health += 5
+            eat_sound.play()
 
     def shoot(self):
             bullet = self.Weap(self.rect.center)
@@ -432,7 +433,7 @@ def start_the_game():
         screen.blit(heart, Vector2(590, 20))
         draw_text(screen, str(player.health), 575, 25, BLACK, pygame.font.Font("DS Stamper.ttf", 20))
 
-        screen.blit(money, Vector2(590, 55))
+        screen.blit(food_picture, Vector2(590, 55))
         draw_text(screen, str(player.food), 575, 60, BLACK, pygame.font.Font("DS Stamper.ttf", 20))
 
         # После отрисовки всего, переворачиваем экран
@@ -508,8 +509,8 @@ menu.add_selector('Difficulty :', [('Hard', 1), ('Easy', 2)], onchange=set_diffi
 menu.add_button('Quit', pygame_menu.events.EXIT)
 
 engine = sound.Sound()
-engine.set_sound(sound.SOUND_TYPE_KEY_ADDITION, 'type.wav')
-engine.set_sound(sound.SOUND_TYPE_CLICK_MOUSE, 'type.wav')
+engine.set_sound(sound.SOUND_TYPE_KEY_ADDITION, 'type43.wav')
+engine.set_sound(sound.SOUND_TYPE_CLICK_MOUSE, 'type43.wav')
 menu.set_sound(engine, recursive=True)
 pygame.mixer.music.load(path.join(snd_dir, 'HeroicDemise.mp3'))
 pygame.mixer.music.set_volume(0.22)

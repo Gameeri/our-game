@@ -30,7 +30,7 @@ class Monster(pygame.sprite.Sprite):
         "Начальные координаты монстра"
         pos = (0, 0)
         while (MAP.ourMap[pos[1]//WALL_HEIGHT][pos[0]//WALL_WIDTH] != 'e'):
-            pos = (random.randint(WALL_WIDTH, total_level_width), random.randint(WALL_HEIGHT, total_level_height))
+            pos = (random.randint(2 * WALL_WIDTH, total_level_width-WALL_WIDTH), random.randint(2 * WALL_HEIGHT, total_level_height-WALL_HEIGHT))
         self.rect.center = Vector2(pos)
 
         self.speed = Vector2(0,0)
@@ -170,6 +170,8 @@ class Player(pygame.sprite.Sprite):
         "Уменьшается здоровье при столкновении с монстром"
         if (pygame.sprite.spritecollide(player, monsters,  False)):
             self.health -=  1
+
+
 
     def eat(self):
         if self.food > 0:
@@ -478,8 +480,8 @@ def continue_menu():
     menu.add_button('Quit', pygame_menu.events.EXIT)
 
     engine = sound.Sound()
-    engine.set_sound(sound.SOUND_TYPE_KEY_ADDITION, 'type.wav')
-    engine.set_sound(sound.SOUND_TYPE_CLICK_MOUSE, 'type.wav')
+    engine.set_sound(sound.SOUND_TYPE_KEY_ADDITION, 'type43.wav')
+    engine.set_sound(sound.SOUND_TYPE_CLICK_MOUSE, 'type43.wav')
     menu.set_sound(engine, recursive=True)
     pygame.mixer.music.load(path.join(snd_dir, 'HeroicDemise.mp3'))
     pygame.mixer.music.set_volume(0.22)

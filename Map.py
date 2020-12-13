@@ -67,7 +67,7 @@ def createMap(N, M, lBMin, lBMax, cB, cI):
         for j in range(M//2 - 1, M//2 + 2):
             ourMap[i][j] = 'e'
 
-    for _ in range(cB//6):
+    for _ in range(cB//4 ):
         i = random.randrange(1, N-1, 1)
         for j in range(1, M-1):
             ourMap[i][j] = 'e'
@@ -79,12 +79,6 @@ def createMap(N, M, lBMin, lBMax, cB, cI):
             x = random.randrange(1, M - 2, 1)
             y = random.randrange(1, N - 2, 1)
         ourMap[y][x] = 't'
-    x = random.randrange(1, M - 2, 1)
-    y = random.randrange(0, N - 2, N - 2)
-    ourMap[y][x] = 'c'
-    x = random.randrange(0, M - 2, M - 2)
-    y = random.randrange(1, N - 2, 1)
-    ourMap[y][x] = 'c'
     return ourMap
 
 

@@ -280,11 +280,11 @@ pygame.display.set_caption("My Game")
 pygame.mixer.music.load(path.join(snd_dir, 'Mysterious.mp3'))
 pygame.mixer.music.set_volume(0.1)
 pygame.mixer.music.play(loops=-1)
-while(running):  
+while(running):
     string1 = ""
     string2 = ""
     string3 = ""
-    
+
 
     screen.blit(background, background_rect)
 
@@ -312,11 +312,11 @@ while(running):
         string3 = ""
 
 
-    draw_text(screen, string1,  WIDTH / 2, 170, BLACK, pygame.font.Font("Amano.ttf", 35))
-    draw_text(screen, string2,  WIDTH / 2, 230, BLACK, pygame.font.Font("Amano.ttf", 35))
-    draw_text(screen, string3,  WIDTH / 2, 290, BLACK, pygame.font.Font("Amano.ttf", 35))
+    draw_text(screen, string1,  WIDTH / 2, 170, BLACK, pygame.font.Font("fonts/Amano.ttf", 35))
+    draw_text(screen, string2,  WIDTH / 2, 230, BLACK, pygame.font.Font("fonts/Amano.ttf", 35))
+    draw_text(screen, string3,  WIDTH / 2, 290, BLACK, pygame.font.Font("fonts/Amano.ttf", 35))
     for event in pygame.event.get():
-        if event.type == pygame.QUIT: 
+        if event.type == pygame.QUIT:
             exit()
         if event.type == pygame.KEYDOWN:
             t+= 1
@@ -362,7 +362,7 @@ def start_the_game():
 
                     if (pygame.sprite.spritecollide(player, items, True)):
                         n = random.randint(0,5) #рандомное целое на отрезке. для вероятности.
-                        if n != 4 and n != 5:
+                        if n == 0 or n == 1:
                             player.food += 1
                             chest_sound.play()
                         elif n == 4:
@@ -427,16 +427,16 @@ def start_the_game():
 
         elif player.Weap == Gun:
             screen.blit(Gun2, Vector2(20, 20))
-            draw_text(screen, str(player.gun), 70, 25, BLACK, pygame.font.Font("DS Stamper.ttf", 20))
+            draw_text(screen, str(player.gun), 70, 25, BLACK, pygame.font.Font("fonts/DS Stamper.ttf", 20))
         elif player.Weap == Dynamite:
             screen.blit(Dyn, Vector2(10, 10))
-            draw_text(screen, str(player.dyn), 70, 25, BLACK, pygame.font.Font("DS Stamper.ttf", 20))
+            draw_text(screen, str(player.dyn), 70, 25, BLACK, pygame.font.Font("fonts/DS Stamper.ttf", 20))
 
         screen.blit(heart, Vector2(590, 20))
-        draw_text(screen, str(player.health), 575, 25, BLACK, pygame.font.Font("DS Stamper.ttf", 20))
+        draw_text(screen, str(player.health), 575, 25, BLACK, pygame.font.Font("fonts/DS Stamper.ttf", 20))
 
         screen.blit(food_picture, Vector2(590, 55))
-        draw_text(screen, str(player.food), 575, 60, BLACK, pygame.font.Font("DS Stamper.ttf", 20))
+        draw_text(screen, str(player.food), 575, 60, BLACK, pygame.font.Font("fonts/DS Stamper.ttf", 20))
 
         # После отрисовки всего, переворачиваем экран
         pygame.display.flip()
@@ -444,7 +444,7 @@ def start_the_game():
 def game_over():
     surface = pygame.display.set_mode((650, 500))
     pygame.display.set_caption("My Game")
-    bkgr = pygame.image.load(path.join('main.jpg')).convert()
+    bkgr = pygame.image.load(path.join('image/main.jpg')).convert()
     neg = pygame.Surface(bkgr.get_size())
     neg.fill((255, 255, 255))
     neg.blit(bkgr, (0, 0), special_flags=pygame.BLEND_SUB)
@@ -453,8 +453,8 @@ def game_over():
 
 
     while True:
-        draw_text(surface, "Press any key to exit", WIDTH / 2, 400, WHITE, pygame.font.Font("AirmoleAntique Regular.ttf", 40))
-        draw_text(surface, "GAME OVER", WIDTH / 2, 150, RED, pygame.font.Font("AirmoleAntique Regular.ttf", 100))
+        draw_text(surface, "Press any key to exit", WIDTH / 2, 400, WHITE, pygame.font.Font("fonts/AirmoleAntique Regular.ttf", 40))
+        draw_text(surface, "GAME OVER", WIDTH / 2, 150, RED, pygame.font.Font("fonts/AirmoleAntique Regular.ttf", 100))
         events = pygame.event.get()
 
 
@@ -472,7 +472,7 @@ def game_over():
 def continue_menu():
     pygame.display.set_caption("My Game")
     surface = pygame.display.set_mode((650, 500))
-    bkgr = pygame.image.load(path.join('main.jpg')).convert()
+    bkgr = pygame.image.load(path.join('image/main.jpg')).convert()
     menu = pygame_menu.Menu(250, 400, 'Pause',
                             theme=pygame_menu.themes.THEME_SOLARIZED )
     surface.blit(bkgr, bkgr.get_rect())
@@ -480,8 +480,8 @@ def continue_menu():
     menu.add_button('Quit', pygame_menu.events.EXIT)
 
     engine = sound.Sound()
-    engine.set_sound(sound.SOUND_TYPE_KEY_ADDITION, 'type43.wav')
-    engine.set_sound(sound.SOUND_TYPE_CLICK_MOUSE, 'type43.wav')
+    engine.set_sound(sound.SOUND_TYPE_KEY_ADDITION, 'sounds/type43.wav')
+    engine.set_sound(sound.SOUND_TYPE_CLICK_MOUSE, 'sounds/type43.wav')
     menu.set_sound(engine, recursive=True)
     pygame.mixer.music.load(path.join(snd_dir, 'HeroicDemise.mp3'))
     pygame.mixer.music.set_volume(0.22)
@@ -501,7 +501,7 @@ def continue_menu():
         pygame.display.update()
 
 surface = pygame.display.set_mode((650, 500))
-bkgr = pygame.image.load(path.join('main.jpg')).convert()
+bkgr = pygame.image.load(path.join('image/main.jpg')).convert()
 menu = pygame_menu.Menu(300, 400, 'Main menu',
                        theme=pygame_menu.themes.THEME_SOLARIZED)
 pygame.display.set_caption("My Game")
@@ -511,8 +511,8 @@ menu.add_selector('Difficulty :', [('Hard', 1), ('Easy', 2)], onchange=set_diffi
 menu.add_button('Quit', pygame_menu.events.EXIT)
 
 engine = sound.Sound()
-engine.set_sound(sound.SOUND_TYPE_KEY_ADDITION, 'type43.wav')
-engine.set_sound(sound.SOUND_TYPE_CLICK_MOUSE, 'type43.wav')
+engine.set_sound(sound.SOUND_TYPE_KEY_ADDITION, 'sounds/type43.wav')
+engine.set_sound(sound.SOUND_TYPE_CLICK_MOUSE, 'sounds/type43.wav')
 menu.set_sound(engine, recursive=True)
 pygame.mixer.music.load(path.join(snd_dir, 'HeroicDemise.mp3'))
 pygame.mixer.music.set_volume(0.22)

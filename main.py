@@ -35,7 +35,7 @@ class Monster(pygame.sprite.Sprite):
 
         self.speed = Vector2(0,0)
         self.left, self.right, self.up, self.down = 0, 0, 0, 1
-        self.vel = 5  #величина скорости
+        self.vel = 4  #величина скорости
         self.health = 50
 
     def update(self):

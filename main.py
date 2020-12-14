@@ -230,20 +230,24 @@ for _ in range(10): #для отладки!!!
 
 
 platforms = pygame.sprite.Group()
+platformsBorders = pygame.sprite.Group()
 # счетчик
 
 
 #отображение стен
 coord = Vector2(0,0) # координаты
 i = 0
-for row in MAP.ourMap: # вся строка
+for indexRow, row in enumerate(MAP.ourMap): # вся строка
     #это для определения координат пули
     j = 0
-    for col in row: # каждый символ
+    for indexCol, col in enumerate(row): # каждый символ
         if col == "b":
             pf = Platform(coord)
             all_sprites.add(pf)
-            platforms.add(pf)
+            if (indexRow == 0) | (indexRow == MAP_HEIGHT - 1) | (indexCol == 0) | (indexCol == MAP_WIDTH - 1):
+                platformsBorders.add(pf)
+            else:
+                platforms.add(pf)
         if col == "t":
             #и тут передал координаты
             m = Item(Vector2(j * ITEM_WIDTH, i * ITEM_HEIGHT))

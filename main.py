@@ -127,7 +127,7 @@ class Player(pygame.sprite.Sprite):
         self.Weap = Tomato
         self.gun = 0 #кол-во патронов
         self.dyn = 0 #кол-во патронов
-        self.health = 150
+        self.health = 15000
         self.food = 0
 
     def update(self):

@@ -3,7 +3,7 @@ from Map import *
 #погрешности
 deltax0 = 4
 deltay0 = 4
-k = 4
+k = 3
 deltax = deltax0
 deltay = deltay0
 

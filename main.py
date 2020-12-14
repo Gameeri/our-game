@@ -36,14 +36,14 @@ class Monster(pygame.sprite.Sprite):
         self.speed = Vector2(0,0)
         self.left, self.right, self.up, self.down = 0, 0, 0, 1
         self.vel = 4 #величина скорости
-        self.health = 60
+        self.health = 50
 
     def update(self):
         self.speed = Vector2(0, 0)
         "Попадание пули в монстра"
         if (pygame.sprite.spritecollide(self, bullets, False)):
             if(player.Weap == Gun):
-                self.health -= 20
+                self.health -= 10
                 if (self.health <= 0):
                     pygame.sprite.groupcollide(monsters, bullets, True, True)
                 else:
@@ -91,7 +91,7 @@ class Dynamite(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.image = Dyn
         self.rect = self.image.get_rect()
-        self.vel = 2
+        self.vel = 3
         self.rect.center = pos
         self.speed = Vector2(0, 0)
         self.direction = 'DOWN'
@@ -127,7 +127,7 @@ class Player(pygame.sprite.Sprite):
         self.Weap = Tomato
         self.gun = 0 #кол-во патронов
         self.dyn = 0 #кол-во патронов
-        self.health = 15000
+        self.health = 150
         self.food = 0
 
     def update(self):
@@ -223,11 +223,13 @@ bullets = pygame.sprite.Group()
 dynamites = pygame.sprite.Group()
 monsters = pygame.sprite.Group()#для отладки!!!
 player = Player((total_level_width//2, total_level_height//2))
-for _ in range(10): #для отладки!!!
-    monster = Monster() #для отладки!!!!
-    monsters.add(monster)#для отладки!!!
-    all_sprites.add(monster)
 
+
+
+for _ in range(10):  #добавление монстров
+    monster = Monster()
+    monsters.add(monster)
+    all_sprites.add(monster)
 
 platforms = pygame.sprite.Group()
 platformsBorders = pygame.sprite.Group()
@@ -270,11 +272,7 @@ def draw_text(surf, text, x, y, colour, font):
 
 # Цикл игры
 
-
-def set_difficulty(value, difficulty):
-    # Do the job here !
-    pass
-
+#предыстория
 running = True
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 t = 0
@@ -366,9 +364,9 @@ def start_the_game():
 
                     if (pygame.sprite.spritecollide(player, items, True)):
                         n = random.randint(0,5) #рандомное целое на отрезке. для вероятности.
-                        if n == 0 or n == 1:
+                        if n == 1 or n == 0:
                             player.food += 1
-                            chest_sound.play()
+                            elixir_sound.play()
                         elif n == 4:
                             player.Weap = Gun
                             gun_sound.play()
@@ -377,6 +375,8 @@ def start_the_game():
                             player.Weap = Dynamite
                             watermelon_sound.play()
                             player.dyn += 2
+                        else:
+                            chest_sound.play()
                 if event.key == pygame.K_ESCAPE:
                     continue_menu()
                 if event.key == pygame.K_SPACE:
@@ -445,7 +445,7 @@ def start_the_game():
         # После отрисовки всего, переворачиваем экран
         pygame.display.flip()
 
-def game_over():
+def game_over(): # меню завершения игры
     surface = pygame.display.set_mode((650, 500))
     pygame.display.set_caption("My Game")
     bkgr = pygame.image.load(path.join('image/main.jpg')).convert()
@@ -473,7 +473,7 @@ def game_over():
         pygame.display.flip()
 
 
-def continue_menu():
+def continue_menu(): # меню паузы
     pygame.display.set_caption("My Game")
     surface = pygame.display.set_mode((650, 500))
     bkgr = pygame.image.load(path.join('image/main.jpg')).convert()
@@ -504,6 +504,8 @@ def continue_menu():
 
         pygame.display.update()
 
+
+#основное меню
 surface = pygame.display.set_mode((650, 500))
 bkgr = pygame.image.load(path.join('image/main.jpg')).convert()
 menu = pygame_menu.Menu(300, 400, 'Main menu',
@@ -511,7 +513,6 @@ menu = pygame_menu.Menu(300, 400, 'Main menu',
 pygame.display.set_caption("My Game")
 surface.blit(bkgr, bkgr.get_rect())
 menu.add_button('Play', start_the_game)
-menu.add_selector('Difficulty :', [('Hard', 1), ('Easy', 2)], onchange=set_difficulty)
 menu.add_button('Quit', pygame_menu.events.EXIT)
 
 engine = sound.Sound()

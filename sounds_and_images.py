@@ -13,8 +13,10 @@ shoot_sound.set_volume(0.08)
 
 
 
-chest_sound = pygame.mixer.Sound(path.join(snd_dir, 'elixir.mp3'))
-chest_sound.set_volume(0.5)
+chest_sound = pygame.mixer.Sound(path.join(snd_dir, 'chest.mp3'))
+chest_sound.set_volume(0.7)
+elixir_sound = pygame.mixer.Sound(path.join(snd_dir, 'elixir.mp3'))
+elixir_sound.set_volume(0.5)
 eat_sound = pygame.mixer.Sound(path.join(snd_dir, 'potion2.mp3'))
 eat_sound.set_volume(0.8)
 gun_sound = pygame.mixer.Sound(path.join(snd_dir, 'gun.wav'))

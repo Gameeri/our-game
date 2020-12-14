@@ -224,9 +224,9 @@ dynamites = pygame.sprite.Group()
 monsters = pygame.sprite.Group()#для отладки!!!
 player = Player((total_level_width//2, total_level_height//2))
 
+monsters_numb = 10
 
-
-for _ in range(10):  #добавление монстров
+for _ in range(monsters_numb):  #добавление монстров
     monster = Monster()
     monsters.add(monster)
     all_sprites.add(monster)
@@ -321,8 +321,9 @@ while(running):
         if event.type == pygame.QUIT:
             exit()
         if event.type == pygame.KEYDOWN:
-            t+= 1
-            paper.play()
+            if event.key == K_RETURN or event.key == K_SPACE:
+                t += 1
+                paper.play()
 
     if t == 5:
         break
@@ -395,12 +396,18 @@ def start_the_game():
                         gun_sound.play()
 
 
-        if player.health <= 0:
+        if player.health <= 0: # мерть персонажа
             pygame.mixer.music.load(path.join(snd_dir, 'game_over.mp3'))
             pygame.mixer.music.set_volume(0.1)
             pygame.mixer.music.play(loops=-1)
             game_over()
         # Обновление
+
+        if len(monsters) == 0:
+            pygame.mixer.music.load(path.join(snd_dir, 'dooby.mp3'))
+            pygame.mixer.music.set_volume(0.1)
+            pygame.mixer.music.play(loops=-1)
+            win()
         all_sprites.update()
 
         #движение карты
@@ -445,6 +452,49 @@ def start_the_game():
         # После отрисовки всего, переворачиваем экран
         pygame.display.flip()
 
+def win():
+    surface = pygame.display.set_mode((650, 500))
+    pygame.display.set_caption("My Game")
+    background = pygame.image.load(path.join(img_dir, '80.jpg')).convert()
+    surface.blit(bkgr, bkgr.get_rect())
+    t = 0
+    while (running):
+        string1 = ""
+        string2 = ""
+        string3 = ""
+
+        screen.blit(background, background_rect)
+
+        if t == 0:
+            string1 = "The elder repelled"
+            string2 = "all the attacks"
+            string3 = "of the monsters"
+        if t == 1:
+            string1 = "He cleansed his land"
+            string2 = "of evil spirits"
+            string3 = ""
+        if t == 2:
+            string2 = "Now there will be peace"
+            string1 = ""
+            string3 = ""
+            draw_text(surface, "Press any key to exit", WIDTH / 2, 430, WHITE,
+                      pygame.font.Font("fonts/Amano.ttf", 30))
+
+        draw_text(screen, string1, WIDTH / 2, 170, BLACK, pygame.font.Font("fonts/Amano.ttf", 35))
+        draw_text(screen, string2, WIDTH / 2, 230, BLACK, pygame.font.Font("fonts/Amano.ttf", 35))
+        draw_text(screen, string3, WIDTH / 2, 290, BLACK, pygame.font.Font("fonts/Amano.ttf", 35))
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == K_RETURN or event.key == K_SPACE:
+                    t += 1
+                    paper.play()
+
+        if t == 3:
+            exit()
+        pygame.display.flip()
+
 def game_over(): # меню завершения игры
     surface = pygame.display.set_mode((650, 500))
     pygame.display.set_caption("My Game")
@@ -453,8 +503,6 @@ def game_over(): # меню завершения игры
     neg.fill((255, 255, 255))
     neg.blit(bkgr, (0, 0), special_flags=pygame.BLEND_SUB)
     surface.blit(neg, neg.get_rect())
-
-
 
     while True:
         draw_text(surface, "Press any key to exit", WIDTH / 2, 400, WHITE, pygame.font.Font("fonts/AirmoleAntique Regular.ttf", 40))
@@ -535,5 +583,3 @@ while True:
         menu.draw(surface)
 
     pygame.display.update()
-
-pygame.quit()

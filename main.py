@@ -35,7 +35,7 @@ class Monster(pygame.sprite.Sprite):
 
         self.speed = Vector2(0,0)
         self.left, self.right, self.up, self.down = 0, 0, 0, 1
-        self.vel = 4 #величина скорости
+        self.vel = 5  #величина скорости
         self.health = 50
 
     def update(self):
@@ -509,7 +509,7 @@ def game_over(): # меню завершения игры
     surface.blit(neg, neg.get_rect())
 
     while True:
-        draw_text(surface, "Press any key to exit", WIDTH / 2, 400, WHITE, pygame.font.Font("fonts/AirmoleAntique Regular.ttf", 40))
+        draw_text(surface, "Press Enter to exit", WIDTH / 2, 400, WHITE, pygame.font.Font("fonts/AirmoleAntique Regular.ttf", 40))
         draw_text(surface, "GAME OVER", WIDTH / 2, 150, RED, pygame.font.Font("fonts/AirmoleAntique Regular.ttf", 100))
         events = pygame.event.get()
 
@@ -519,7 +519,8 @@ def game_over(): # меню завершения игры
             if event.type == pygame.QUIT:
                 exit()
             if event.type == pygame.KEYDOWN:
-                exit()
+                if event.key == K_RETURN:
+                    exit()
         neg.blit(bkgr, (0, 0), special_flags=pygame.BLEND_SUB)
         #surface.blit(neg, (0,0))
         pygame.display.flip()

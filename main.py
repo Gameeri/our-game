@@ -286,6 +286,7 @@ while(running):
     string1 = ""
     string2 = ""
     string3 = ""
+    string4 = "Press Enter to continue"
 
 
     screen.blit(background, background_rect)
@@ -317,6 +318,7 @@ while(running):
     draw_text(screen, string1,  WIDTH / 2, 170, BLACK, pygame.font.Font("fonts/Amano.ttf", 35))
     draw_text(screen, string2,  WIDTH / 2, 230, BLACK, pygame.font.Font("fonts/Amano.ttf", 35))
     draw_text(screen, string3,  WIDTH / 2, 290, BLACK, pygame.font.Font("fonts/Amano.ttf", 35))
+    draw_text(screen, string4, 510, 465, WHITE, pygame.font.Font("fonts/Amano.ttf", 25))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             exit()
@@ -462,6 +464,7 @@ def win():
         string1 = ""
         string2 = ""
         string3 = ""
+        string4 = "Press Enter to continue"
 
         screen.blit(background, background_rect)
 
@@ -477,22 +480,23 @@ def win():
             string2 = "Now there will be peace"
             string1 = ""
             string3 = ""
-            draw_text(surface, "Press any key to exit", WIDTH / 2, 430, WHITE,
-                      pygame.font.Font("fonts/Amano.ttf", 30))
+            string4 = "Press any key to exit"
+
 
         draw_text(screen, string1, WIDTH / 2, 170, BLACK, pygame.font.Font("fonts/Amano.ttf", 35))
         draw_text(screen, string2, WIDTH / 2, 230, BLACK, pygame.font.Font("fonts/Amano.ttf", 35))
         draw_text(screen, string3, WIDTH / 2, 290, BLACK, pygame.font.Font("fonts/Amano.ttf", 35))
+        draw_text(surface, string4, 510, 465, WHITE, pygame.font.Font("fonts/Amano.ttf", 30))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit()
             if event.type == pygame.KEYDOWN:
-                if event.key == K_RETURN or event.key == K_SPACE:
+                if t==2:
+                    exit()
+                if event.key == K_RETURN:
                     t += 1
                     paper.play()
 
-        if t == 3:
-            exit()
         pygame.display.flip()
 
 def game_over(): # меню завершения игры
